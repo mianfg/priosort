@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col">
+        <div class="text-center text-white">
+            <h3>Tu sorteo</h3>
+        </div>
+        <div class="card card-body bg-white justify-content-around">
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">A continuación, tienes las personas que ya han guardado sus prioridades. Recarga la página para actualizar los estados. Cuando todas las personas hayan guardado sus prioridades, podrás proceder al sorteo, pulsando en <span class="badge badge-pill badge-primary">Sortear<i
+                        class="fa fa-dice ml-2"></i></span>.</p><p>Si quieres eliminar la prioridad guardada de alguna persona (por el motivo que sea), pulsa en la <i class="fa fa-times"></i>.</p>
+                    <h4 class="text-light mt-4"><i class="fa fa-share-alt mr-3"></i>Comparte el sorteo</h4>
+                    <p class="text-light">Comparte este enlace a continuación para que todos puedan participar en el sorteo. Si tú también quieres participar en el sorteo, deberás acceder también a este enlace.</p>
+                    <div class="form-group mb-0 pb-0">
+                        <div class="input-group">
+                            <input class="form-control" value="https://priosort.mianfg.me/{{ asignacion }}" id="asignacion-url" readonly>
+                            <div class="input-group-append">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item" id="asignacion-copy"><button
+                                                type="button"
+                                                class="page-link"><i class="fa fa-copy"></i></button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-light mt-3"><i class="fa fa-eye mr-3"></i>Accede a los resultados</h4>
+                    <p class="text-light">En esta misma dirección podrás ejecutar el sorteo y ver los resultados una vez que hayas ejecutado el sorteo. Te dejamos la URL a continuación.</p>
+                    <div class="form-group mb-0 pb-0">
+                        <div class="input-group">
+                            <input class="form-control" value="https://priosort.mianfg.me/{{ id }}" id="share-url" readonly>
+                            <div class="input-group-append">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item" id="share-copy"><button
+                                                type="button"
+                                                class="page-link"><i class="fa fa-copy"></i></button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-white">
+                    <p class="text-center"><a href="/{{ id }}"><i class="fa fa-refresh mr-2"></i>Recargar</a></p>
+                    <table style="width:100%" class="table table-borderless text-white">
+                        {% for persona in personas %}
+                        <tr>
+                            <th>{{ persona.nombre }}</th>
+                            <th class="text-right" style="font-weight: 500">{% if persona.hecho %}<a href="/eliminar-asignacion/{{ persona.id }}"><i class="fa fa-times mr-2"></i></a>{%endif%}<i class="fa fa-circle" style="color:{% if persona.hecho %}green{% else %}red{% endif %}"></i></th>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <div class="text-muted text-right mt-4">
+                        <a href="/{{ id }}/sortear" role="button"
+                            class="selectable {% if hecho %} {% else %}disabled{% endif %} btn btn-primary fade-page" role="button">Sortear<i
+                                class="fa fa-dice ml-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+document.getElementById("share-copy").onclick = function () {
+    var copyText = document.getElementById("share-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+}
+
+document.getElementById("asignacion-copy").onclick = function () {
+    var copyText = document.getElementById("asignacion-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+}
+
+</script>
+{% endblock %}

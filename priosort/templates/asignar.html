@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col">
+        <div class="text-center text-white">
+            <h3>Asignar prioridades</h3>
+        </div>
+        {% if message %}
+        <div class="card card-body bg-white justify-content-around">
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">{{ message }}</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card card-body bg-white justify-content-around" id="step-1">
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">¡Buenas! Primero necesitamos saber quién eres. Selecciona tu nombre a continuación.</p>
+                    <div>
+                        <h5 class="text-light">¿No encuentras tu nombre?</h5>
+                        <p class="text-light">Si no encuentras tu nombre, es posible que alguien se haya equivocado y haya asignado tus prioridades. Ponte en contacto con el creador del sorteo para eliminar esas prioridades.</p>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-white personas">
+                    {% for persona in personas_nohecho %}
+                    <button type="button" id="persona-{{persona.id}}" class="btn btn-secondary btn-block" onclick='persona_is("{{persona.id}}", "{{persona.nombre}}")'>{{ persona.nombre }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="step-2" hidden>
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Ordena tus prioridades, <strong id="name">NOMBRE</strong>, arrastrando los bloques. La primera será la que más quieres y la última la que menos. Cuando estés listo, pulsa en <span class="badge badge-pill badge-primary">Enviar<i
+                        class="fa fa-paper-plane ml-2"></i></span>.</p>
+                    <p class="text-light text-small">Si te has equivocado eligiendo a la persona, <a href="/{{asignacion}}">pulsa aquí</a>.</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-white">
+                    <p class="text-center"><i class="fa fa-arrow-up mr-2"></i>Más prioridad</p>
+                    <div id="items">
+                        {% for item in items %}
+                        <button type="button" id="item_{{ item.id }}" class="btn btn-secondary btn-block">{{ item.nombre }}</button>
+                        {% endfor %}
+                    </div>
+                    <p class="text-center"><i class="fa fa-arrow-down mr-2 mt-3"></i>Menos prioridad</p>
+                    <div class="text-muted text-right mt-4">
+                        <button id="submit"
+                            class="selectable btn btn-primary fade-page" role="button">Enviar<i
+                                class="fa fa-paper-plane ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="error-1" hidden>
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <h5 class="text-light">Ha habido un problemita...</h5>
+                    <p class="text-light">Alguien ha enviado ya su lista de prioridades con tu nombre. <a href="/{{asignacion}}">Pulsa aquí</a> para intentarlo de nuevo. Si no aparece tu nombre, contacta con el creador del sorteo.</p>
+                </div>
+                <div class="col-md-1 text-light"></div>
+                <div class="col-md-5">
+                    <!--<img src="/static/ill/error.png">-->
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="error-2" hidden>
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <h5 class="text-light">Ha habido un problemita...</h5>
+                    <p class="text-light">No hemos podido guardar tus prioridades. <a href="/{{asignacion}}">Pulsa aquí</a> para intentarlo de nuevo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="success" hidden>
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <h5 class="text-light">¡Genial!</h5>
+                    <p class="text-light">Tus prioridades se han guardado correctamente. ¡Gracias!</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+let el = document.getElementById('items');
+var sortable = Sortable.create(el);
+
+document.getElementById("submit").onclick = function() {
+    // get sorted ids
+    $sorted_ids = []
+    for (i=0; i < $("#items").children().length; i++) {
+        $sorted_ids.push($("#items").children()[i].id.split("_")[1])
+    }
+
+    asignacion_data = JSON.stringify({
+        persona:        $persona,
+        prioridades:    $sorted_ids
+    })
+    
+    $.ajax({
+        url : "/post/asignacion", // the endpoint
+        method : "POST",
+        type : "POST", // http method
+        data : {
+            "csrfmiddlewaretoken" : getCookie("csrftoken"),
+            "data" : asignacion_data
+        }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            $("#step-2").hide()
+            if ( json['result'] == 'OK' ) {
+                $("#success").removeAttr('hidden');
+            } else if ( json['result'] == 'NOTOK') {
+                $("#error-1").removeAttr('hidden');
+            } else {
+                $("#error-2").removeAttr('hidden');
+            }
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $("#step-2").hide()
+            $("#error-2").removeAttr('hidden');
+        }
+    });
+}
+
+function persona_is(id, name) {
+    $persona = id;
+    $("#step-1").hide()
+    $("#step-2").removeAttr('hidden')
+    document.getElementById("name").innerHTML = name
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

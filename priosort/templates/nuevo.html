@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col">
+        <div class="text-center text-white">
+            <h3>Crear nuevo sorteo</h3>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="step-1">
+            <div class="text-center text-white">
+                <h1 class="mb-1" style="font-weight: 600;"><span style="font-size: 0.6em">PASO</span>
+                    <strong id="step">1</strong>/3</h1>
+                <p class="mb-5"><i class="fa fa-circle"></i><i class="fa fa-dot-circle ml-2 mr-2"></i><i
+                        class="fa fa-dot-circle"></i></p>
+            </div>
+
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">Vamos a crear tu sorteo</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Primero, necesitamos darle un nombre. Puedes ponerle lo que
+                        quieras, como "Habitación del Piso" o "Sabor de Pizza".</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="form-group mb-0 pb-0">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><strong>Nombre</strong></span>
+                            </div>
+                            <input class="form-control" placeholder="Nombre del sorteo" type="text" maxlength="50"
+                                id="nombre">
+                        </div>
+                    </div>
+                    <div class="text-danger text-right mb-3">
+                        <p id="error-1" class="mb-1" hidden>Debes insertar un nombre para el sorteo</p>
+                    </div>
+                    <div class="text-muted text-right mt-4">
+                        <button target="_blank" role="button" id="next-1"
+                            class="selectable btn btn-primary fade-page" role="button">Siguiente<i
+                                class="fa fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="step-2">
+            <div class="text-center text-white">
+                <h1 class="mb-1" style="font-weight: 600;"><span style="font-size: 0.6em">PASO</span>
+                    <strong id="step">2</strong>/3</h1>
+                <p class="mb-5"><i class="fa fa-dot-circle"></i><i class="fa fa-circle ml-2 mr-2"></i><i
+                        class="fa fa-dot-circle"></i></p>
+            </div>
+
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">¿Qué cosas quieres sortear?</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Inserta tantas cosas como quieras sortear. Por ejemplo, si estás sorteando la habitación de un piso, puedes poner "Habitación Salón", "Habitación Pequeña"... o incluso "Habitación 1", "Habitación 2"... ¡Lo que tú decidas!</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="form-group mb-0 pb-0" id="items-group">
+                        <div class="input-group" id="item-input-1">
+                            <input class="form-control item-textarea" placeholder="Insertar item..." id="item-1" maxlength="50">
+                            <div class="input-group-append">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item item-dismiss" id="item-1-dismiss"><button
+                                                type="button" onclick="remove_item(1)"
+                                                class="page-link"><i class="fa fa-times"></i></button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0)" onclick="add_item()" id="add-item"><i class="fa fa-plus mr-3"></i>Añadir otro item</a>
+                    <div class="text-danger text-right mb-3">
+                        <p id="error-21" class="mb-1" hidden>Debes insertar al menos dos items</p>
+                        <p id="error-22" class="mb-1" hidden>No puede haber dos items con el mismo nombre</p>
+                        <p id="error-23" class="mb-1" hidden>No puede haber un item vacío</p>
+                    </div>
+                    <div class="text-muted text-right mt-2">
+                        <button target="_blank" role="button" id="previous-2"
+                            class="selectable btn btn-secondary fade-page mr-3" role="button"><i
+                            class="fa fa-arrow-left mr-2"></i>Anterior</button>
+                        <button target="_blank" role="button" id="next-2"
+                            class="selectable btn btn-primary fade-page" role="button">Siguiente<i
+                            class="fa fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="step-3">
+            <div class="text-center text-white">
+                <h1 class="mb-1" style="font-weight: 600;"><span style="font-size: 0.6em">PASO</span>
+                    <strong id="step">3</strong>/3</h1>
+                <p class="mb-5"><i class="fa fa-dot-circle"></i><i class="fa fa-dot-circle ml-2 mr-2"></i><i
+                        class="fa fa-circle"></i></p>
+            </div>
+
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">Sólo queda una cosita...</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Inserta el nombre de las personas que participan en el sorteo y... ¡ya estaremos listos!</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <div class="form-group mb-0 pb-0" id="personas-group">
+                    </div>
+                    <div class="text-danger text-right mb-3">
+                        <p id="error-31" class="mb-1" hidden>No puede haber dos personas con el mismo nombre</p>
+                        <p id="error-32" class="mb-1" hidden>No puede haber una persona con el nombre en blanco</p>
+                    </div>
+                    <div class="text-muted text-right mt-2">
+                        <button target="_blank" role="button" id="previous-3"
+                            class="selectable btn btn-secondary fade-page mr-3" role="button"><i
+                            class="fa fa-arrow-left mr-2"></i>Anterior</button>
+                        <button target="_blank" role="button" id="next-3"
+                            class="selectable btn btn-primary fade-page" role="button">Siguiente<i
+                            class="fa fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-body bg-white justify-content-around" id="error">
+            <div class="text-center text-white">
+                <h1 class="mb-1" style="font-weight: 600;"><span style="font-size: 0.6em">PASO</span>
+                    <strong id="step">1</strong>/3</h1>
+                <p class="mb-5"><i class="fa fa-circle"></i><i class="fa fa-dot-circle ml-2 mr-2"></i><i
+                        class="fa fa-dot-circle"></i></p>
+            </div>
+
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">Ha ocurrido un error</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Ha ocurrido un error mientras creábamos tu sorteo. Por favor, <a href="/nuevo">inténtalo de nuevo</a>.</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+const getDuplicates = (arr) => {
+  let sorted_arr = arr.slice().sort(); // You can define the comparing function here. 
+  // JS by default uses a crappy string compare.
+  // (we use slice to clone the array so the
+  // original array won't be modified)
+  let results = [];
+  for (let i = 0; i < sorted_arr.length - 1; i++) {
+    if (sorted_arr[i + 1] == sorted_arr[i]) {
+      results.push(sorted_arr[i]);
+    }
+  }
+  return results;
+}
+
+$last_item_id = 1
+
+$(document).ready(function () {
+    $("#step-1").show()
+    $("#step-2").hide()
+    $("#step-3").hide()
+    $("#error").hide()
+});
+
+document.getElementById("next-1").onclick = function() {
+    if ($("#nombre").val() == "") {
+        $("#error-1").removeAttr('hidden')
+        $("#nombre").addClass("is-invalid")
+    } else {
+        $("#step-1").hide()
+        $("#step-2").show()
+        $nombre = $("#nombre").val()
+    }
+}
+
+document.getElementById("next-2").onclick = function() {
+    item_values = $('.item-textarea').map((_,el) => el.value).get()
+    var idArray = [];
+    $('.item-textarea').each(function () {
+        idArray.push(this.id);
+    });
+    
+    keepgoing = true
+
+    duplicates = getDuplicates(item_values)
+
+    for ( i=0; i<idArray.length; i++ ) {
+        id=idArray[i]
+        $("#"+id).removeClass("is-invalid")
+    }
+
+    if (idArray.length < 2) {
+        $("#error-21").removeAttr('hidden')
+        $("#error-21").show()
+
+        keepgoing = false
+    } else {
+        $("#error-21").hide()
+    }
+
+    if (duplicates.length > 0) {
+        $("#error-22").removeAttr('hidden')
+        $("#error-22").show()
+
+        for ( i=0; i<idArray.length; i++ ) {
+            id=idArray[i]
+            if (duplicates.includes($("#"+id).val())) {
+                $("#"+id).addClass("is-invalid")
+            }
+        }
+
+        keepgoing = false
+    } else {
+        $("#error-22").hide()
+    }
+
+    if (item_values.includes("")) {
+        $("#error-23").removeAttr('hidden')
+        $("#error-23").show()
+
+        for ( i=0; i<idArray.length; i++ ) {
+            id=idArray[i]
+            if ($("#"+id).val() == "") {
+                $("#"+id).addClass("is-invalid")
+            }
+        }
+
+        keepgoing = false
+    } else {
+        $("#error-23").hide()
+    }
+
+    if (keepgoing) {
+        $items = item_values
+        $("#step-2").hide()
+        $("#step-3").show()
+
+        for (i=0; i < $items.length; i++) {
+            $("#personas-group").append($(`<div class="input-group" id="persona-input-`+i+`">
+                <input class="form-control persona-textarea mb-3" placeholder="Insertar nombre..." id="persona-`+i+`" maxlength="50">
+            </div>`))
+        }
+    }
+}
+
+document.getElementById("next-3").onclick = function() {
+    persona_values = $('.persona-textarea').map((_,el) => el.value).get()
+    var idArray = [];
+    $('.persona-textarea').each(function () {
+        idArray.push(this.id);
+    });
+    
+    keepgoing = true
+
+    duplicates = getDuplicates(item_values)
+
+    for ( i=0; i<idArray.length; i++ ) {
+        id=idArray[i]
+        $("#"+id).removeClass("is-invalid")
+    }
+
+    if (duplicates.length > 0) {
+        $("#error-31").removeAttr('hidden')
+        $("#error-31").show()
+
+        for ( i=0; i<idArray.length; i++ ) {
+            id=idArray[i]
+            if (duplicates.includes($("#"+id).val())) {
+                $("#"+id).addClass("is-invalid")
+            }
+        }
+
+        keepgoing = false
+    } else {
+        $("#error-31").hide()
+    }
+
+    if (item_values.includes("")) {
+        $("#error-32").removeAttr('hidden')
+        $("#error-32").show()
+
+        for ( i=0; i<idArray.length; i++ ) {
+            id=idArray[i]
+            if ($("#"+id).val() == "") {
+                $("#"+id).addClass("is-invalid")
+            }
+        }
+
+        keepgoing = false
+    } else {
+        $("#error-32").hide()
+    }
+
+    if (keepgoing) {
+        $personas = persona_values
+
+        // send request
+        nuevo_data = JSON.stringify({
+            nombre:         $nombre,
+            items:          $items,
+            personas:       $personas
+        })
+        
+        $.ajax({
+            url : "/post/nuevo", // the endpoint
+            method : "POST",
+            type : "POST", // http method
+            data : {
+                "csrfmiddlewaretoken" : getCookie("csrftoken"),
+                "data" : nuevo_data
+            }, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $("#step-3").hide()
+                if ( json['result'] == 'OK' ) {
+                    window.location.href = "/"+json['sorteo_id'];
+                } else {
+                    $("#error").show()
+                }
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $("#step-3").hide()
+                $("#error").show()
+            }
+        });
+    }
+}
+
+document.getElementById("previous-2").onclick = function() {
+    $("#step-1").show()
+    $("#step-2").hide()
+}
+
+document.getElementById("previous-3").onclick = function() {
+    $("#step-2").show()
+    $("#step-3").hide()
+}
+
+document.getElementById("nombre").onkeypress = function() {
+    $("#error-1").hide()
+    $("#nombre").removeClass("is-invalid")
+}
+
+function remove_item(number) {
+    $("#item-input-"+number).remove()
+}
+
+function add_item() {
+    // if it is the latest, inserts one
+    $last_item_id += 1
+    $("#items-group").append($(`<div class="input-group" id="item-input-`+$last_item_id+`">
+        <input class="form-control item-textarea" placeholder="Insertar item..." id="item-`+$last_item_id+`" maxlength="50">
+        <div class="input-group-append">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item" id="item-`+$last_item_id+`-dismiss"><button
+                            type="button" onclick="remove_item(`+$last_item_id+`)"
+                            class="page-link"><i class="fa fa-times"></i></button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>`))
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

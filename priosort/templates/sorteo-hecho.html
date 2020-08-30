@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col">
+        <div class="text-center text-white">
+            <h3>Resultados del sorteo</h3>
+        </div>
+        <div class="card card-body bg-white justify-content-around">
+            <div class="row">
+                <div class="col md-6 text-light">
+                    <h2 class="text-light">{{ nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 text-light">
+                    <p class="text-light">Estos son los resultados de vuestro sorteo. ¡No olvides compartir <span style="font-weight:600">prio</span><span style="font-weight:900">sort</span> con quien lo necesite!</p>
+                    <p class="text-light">Además, si lo necesitas, puedes crear un <a href="/nuevo">nuevo sorteo</a>.</p>
+                    <h4 class="text-light mt-4"><i class="fa fa-eye mr-3"></i>Comparte los resultados</h4>
+                    <p class="text-light">Comparte este enlace a continuación para que todos puedan ver los resultados de este sorteo.</p>
+                    <div class="form-group mb-0 pb-0">
+                        <div class="input-group">
+                            <input class="form-control" value="https://priosort.mianfg.me/{{ id }}" id="share-url" readonly>
+                            <div class="input-group-append">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item" id="share-copy"><button
+                                                type="button"
+                                                class="page-link"><i class="fa fa-copy"></i></button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-white">
+                    <table style="width:100%" class="table table-borderless text-white">
+                        {% for persona in personas %}
+                        <tr>
+                            <th>{{ persona.nombre }}</th>
+                            <th class="text-right" style="font-weight: 500">{{ persona.item }}</th>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <div class="text-muted text-right mt-4">
+                        <button role="button" data-toggle="modal" data-target="#proceso"
+                            class="selectable btn btn-info fade-page mr-2" role="button">Ver proceso<i
+                            class="fa fa-search ml-2"></i></button>
+                        <button role="button"
+                            class="selectable btn btn-danger fade-page" role="button">Eliminar sorteo<i
+                                class="fa fa-trash ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade" id="proceso" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"><i class="fa fa-search mr-3"></i>Proceso de sorteo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <h3>Cómo se han asignado las prioridades</h3>
+                        <p>La asignación se ha realizado teniendo en cuenta el siguiente orden <strong>aleatorio</strong>:</p>
+                        <ol class="ml-3">
+                            {% for o in orden %}
+                            <li>{{ o }}</li>
+                            {% endfor %}
+                        </ol>
+                        <p>Si entiendes cómo funciona <span style="font-weight:600">prio</span><span style="font-weight:900">sort</span>, podrás comprobar por ti mismo el resultado del sorteo (siempre y cuando preguntes a cada persona la prioridad que ha puesto).</p>
+                        <h3 class="mt-4">Cómo sortea <span style="font-weight:600">prio</span><span style="font-weight:900">sort</span></h3>
+                        <p><span style="font-weight:600">prio</span><span style="font-weight:900">sort</span> realiza un <strong>sorteo con prioridad</strong>, asignando ciertos items a personas de forma aleatoria, pero teniendo en cuenta sus prioridades.
+                            Sencillamente, genera un orden de personas aleatorio y va asignando de acuerdo a ese orden la primera prioridad de cada persona, siempre que no haya sido asignado anteriormente.
+                            Para que lo entiendas, hemos preparado este ejemplo:
+                        </p>
+                        <blockquote class="blockquote" >
+                            <p>Supongamos que <strong style="color:#000">María</strong>, <strong style="color:#000">Miguel</strong> y <strong style="color:#000">Javier</strong> son músicos virtuosos que deben tocar en un concierto la <strong style="color:#000">guitarra</strong>, el <strong style="color:#000">piano</strong> y la <strong style="color:#000">batería</strong>.
+                            Aunque sepan tocar perfectamente cada instrumento, cada uno de ellos prefiere tocar un instrumento a otro, y han decidido usar <span style="font-weight:600">prio</span><span style="font-weight:900">sort</span> para resolver el conflicto.</p>
+                            <p class="mb-1">
+                            Todos ellos entran en la aplicación e indican las siguientes <strong>prioridades</strong> (en orden de mayor a menor prioridad):</p>
+                            <ul>
+                                <li><span style="color: #000">María:</span> Piano, Batería, Guitarra</li>
+                                <li><span style="color: #000">Miguel:</span> Piano, Guitarra, Batería</li>
+                                <li><span style="color: #000">Javier:</span> Batería, Guitarra, Piano</li>
+                            </ul>
+                            <p>El orden <strong>aleatorio</strong> en el que se asignarán las prioridades es: Javier, María, Miguel. Ahora estamos en condiciones de asignar un instrumento a cada músico:</p>
+                            <h6>Proceso de sorteo</h6>
+                            <div id="step-1">
+                                Primero es turno de María, a la que directamente le asignamos el piano.
+                                <ul>
+                                    <li><span style="color: #000">María:</span> <u><b>Piano</b></u>, Batería, Guitarra</li>
+                                    <li><span style="color: #000">Miguel:</span> Piano, Guitarra, Batería</li>
+                                    <li><span style="color: #000">Javier:</span> Batería, Guitarra, Piano</li>
+                                </ul>
+                            </div>
+                            <div id="step-2">
+                                Ni Miguel ni Javier podrán tocar el piano.
+                                <ul>
+                                    <li><span style="color: #000">María:</span> <u><b>Piano</b></u>, Batería, Guitarra</li>
+                                    <li><span style="color: #000">Miguel:</span> <s>Piano</s>, Guitarra, Batería</li>
+                                    <li><span style="color: #000">Javier:</span> Batería, Guitarra, <s>Piano</s></li>
+                                </ul>
+                            </div>
+                            <div id="step-3">
+                                Ahora es el turno de Javier, al que le asignamos la batería.
+                                <ul>
+                                    <li><span style="color: #000">María:</span> <u><b>Piano</b></u>, Batería, Guitarra</li>
+                                    <li><span style="color: #000">Miguel:</span> <s>Piano</s>, Guitarra, Batería</li>
+                                    <li><span style="color: #000">Javier:</span> <u><b>Batería</b></u>, Guitarra, <s>Piano</s></li>
+                                </ul>
+                            </div>
+                            <div id="step-4">
+                                Miguel no podrá tocar la batería.
+                                <ul>
+                                    <li><span style="color: #000">María:</span> <u><b>Piano</b></u>, Batería, Guitarra</li>
+                                    <li><span style="color: #000">Miguel:</span> <s>Piano</s>, Guitarra, <s>Batería</s></li>
+                                    <li><span style="color: #000">Javier:</span> <u><b>Batería</b></u>, Guitarra, <s>Piano</s></li>
+                                </ul>
+                            </div>
+                            <div id="step-5">
+                                Por tanto, Miguel deberá tocar la guitarra. Ya hemos finalizado el sorteo.
+                                <ul>
+                                    <li><span style="color: #000">María:</span> <u><b>Piano</b></u>, Batería, Guitarra</li>
+                                    <li><span style="color: #000">Miguel:</span> <s>Piano</s>, <u><b>Guitarra</b></u>, <s>Batería</s></li>
+                                    <li><span style="color: #000">Javier:</span> <u><b>Batería</b></u>, Guitarra, <s>Piano</s></li>
+                                </ul>
+                            </div>
+                            <div><button type="button" class="btn btn-sm btn-primary mr-2" id="step-prev"><i class="fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-primary" id="step-next"><i class="fa fa-arrow-right"></i></button></div>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$step = 1
+
+$(document).ready(function () {
+    show_step()
+});
+
+function show_step() {
+    for (var j = 1; j <= 5; j++) {
+        if ( j == $step )
+            $("#step-"+j.toString()).show()
+        else
+            $("#step-"+j.toString()).hide()
+    }
+
+    if ($step == 5) {
+        $("#step-next").prop('disabled', true)
+    } else {
+        $("#step-next").prop('disabled', false)
+    }
+    if ($step == 1) {
+        $("#step-prev").prop('disabled', true)
+    } else {
+        $("#step-prev").prop('disabled', false)
+    }
+}
+document.getElementById("step-next").onclick = function () {
+    $step += 1
+    show_step()
+}
+
+document.getElementById("step-prev").onclick = function () {
+    $step -= 1
+    show_step()
+}
+
+document.getElementById("share-copy").onclick = function () {
+    var copyText = document.getElementById("share-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+}
+</script>
+{% endblock %}
